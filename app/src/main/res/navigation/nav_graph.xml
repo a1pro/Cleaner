@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/home_Fragment">
+
+    <fragment
+        android:id="@+id/home_Fragment"
+        android:name="com.applications.cleaner.Fragments.Home_Fragment"
+        android:label="fragment_home_"
+        tools:layout="@layout/fragment_home_" >
+
+        <action
+            android:id="@+id/action_home_Fragment_to_orders_Fragment"
+            app:destination="@id/orders_Fragment" />
+        <action
+            android:id="@+id/action_home_Fragment_to_getdirection_Fragment"
+            app:destination="@id/getdirection_Fragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/orders_Fragment"
+        android:name="com.applications.cleaner.Fragments.Orders_Fragment"
+        android:label="fragment_orders_"
+        tools:layout="@layout/fragment_orders_" >
+        <action
+            android:id="@+id/action_orders_Fragment_to_order_Detail_Fragment"
+            app:destination="@id/order_Detail_Fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/order_Detail_Fragment"
+        android:name="com.applications.cleaner.Fragments.OrderDetailFragment"
+        android:label="fragment_order__detail_"
+        tools:layout="@layout/fragment_order__detail_" >
+        <action
+            android:id="@+id/action_order_Detail_Fragment_to_addons_Fragment"
+            app:destination="@id/addons_Fragment" />
+        <action
+            android:id="@+id/action_order_Detail_Fragment_to_getdirection_Fragment"
+            app:destination="@id/getdirection_Fragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/addons_Fragment"
+        android:name="com.applications.cleaner.Fragments.Addons_Fragment"
+        android:label="fragment_addons_"
+        tools:layout="@layout/fragment_addons_" >
+        <action
+            android:id="@+id/action_addons_Fragment_to_order_Detail_Fragment"
+            app:destination="@id/order_Detail_Fragment" />
+        <argument
+            android:name="value"
+            app:argType="string"
+            android:defaultValue="0"/>
+    </fragment>
+    <fragment
+        android:id="@+id/getdirection_Fragment"
+        android:name="com.applications.cleaner.Fragments.DirectionFragment"
+        android:label="fragment_getdirection_"
+        tools:layout="@layout/fragment_getdirection_" />
+    <fragment
+        android:id="@+id/profile_Fragment"
+        android:name="com.applications.cleaner.Fragments.Profile_Fragment"
+        android:label="fragment_profile_"
+        tools:layout="@layout/fragment_profile_" />
+    <fragment
+        android:id="@+id/history_Fragment"
+        android:name="com.applications.cleaner.Fragments.History_Fragment"
+        android:label="fragment_history_"
+        tools:layout="@layout/fragment_history_" />
+</navigation>
