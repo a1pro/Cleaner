@@ -64,7 +64,8 @@
             android:layout_marginRight="20dp"
             android:backgroundTint="#087F7B"
             android:hint="Enter your Phone Number"
-            android:inputType="textEmailAddress"
+            android:inputType="phone"
+            android:digits="0123456789"
             android:textColor="@color/black"
             android:textSize="17dp" />
 

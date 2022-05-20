@@ -32,6 +32,7 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
             android:layout_below="@+id/order_detail">
 
             <androidx.cardview.widget.CardView
@@ -43,6 +44,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="20dp"
                 android:layout_weight="1"
+                android:animateLayoutChanges="true"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:divider="@android:color/transparent"
@@ -481,6 +483,53 @@
                         android:textSize="20dp"
                         android:visibility="gone" />
 
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_start_cleaning"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/login_button_backdround"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Start Cleaning"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:visibility="gone" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_complete_cleaning"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="30dp"
+                        android:background="@drawable/login_button_backdround"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Complete Cleaning"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:visibility="gone" />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_completed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="30dp"
+                        android:background="@drawable/login_button_backdround"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Order Completed"
+                        android:textAllCaps="false"
+                        android:enabled="false"
+                        android:clickable="false"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:visibility="gone" />
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -490,24 +539,24 @@
 
     <RelativeLayout
         android:id="@+id/rl_get_loc"
-        android:clickable="true"
-        android:visibility="gone"
-        android:focusableInTouchMode="true"
-        android:focusable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#A1000000">
+        android:background="#A1000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@color/white"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
+            android:orientation="horizontal"
             android:paddingStart="20dp"
+            android:paddingTop="10dp"
             android:paddingEnd="20dp"
-            android:orientation="horizontal">
+            android:paddingBottom="10dp">
 
             <ProgressBar
                 android:id="@+id/progress_Bar"

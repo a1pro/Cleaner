@@ -20,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -29,6 +30,7 @@ import com.applications.cleaner.Models.Orders_
 import com.applications.cleaner.R
 import com.applications.cleaner.Retrofit.RetrofitClient
 import com.applications.cleaner.Shareprefrence.My_Sharepreferences
+import com.applications.cleaner.UploadPhotoActivity
 import com.applications.cleaner.utils.CommonUtils
 import com.applications.cleaner.utils.LocationGetter
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -40,7 +42,7 @@ import retrofit2.Response
 
 class OrderDetailFragment : Fragment() {
     private var order_id: String? = ""
-    private var activity: Activity?=null
+    private var activity: Activity? = null
     private lateinit var sharedPreferences: My_Sharepreferences
     private var lat: String? = ""
     private var lng: String? = ""
@@ -48,6 +50,10 @@ class OrderDetailFragment : Fragment() {
     private lateinit var upload_photo: Button
     private lateinit var arrived_at_location: Button
     private lateinit var conferm_order: Button
+
+    private lateinit var btn_start_cleaning: Button
+    private lateinit var btn_complete_cleaning: Button
+    private lateinit var btn_completed: Button
     private lateinit var problem_with_order: Button
     private lateinit var orderstatus_text: TextView
     private lateinit var text: String
@@ -73,8 +79,11 @@ class OrderDetailFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_order__detail_, container, false)
         sharedPreferences = My_Sharepreferences(requireContext())
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        activity=getActivity();
+        activity = getActivity();
         orderstatus_text = view.findViewById<TextView>(R.id.orderstatus_text)
+        btn_start_cleaning = view.findViewById<Button>(R.id.btn_start_cleaning)
+        btn_completed = view.findViewById<Button>(R.id.btn_completed)
+        btn_complete_cleaning = view.findViewById<Button>(R.id.btn_complete_cleaning)
         get_direction = view.findViewById<Button>(R.id.get_direction)
         arrived_at_location = view.findViewById<Button>(R.id.arrived_at_location)
         conferm_order = view.findViewById<Button>(R.id.conferm_order)
@@ -182,9 +191,65 @@ class OrderDetailFragment : Fragment() {
             //ConferorderDailog(context)
             callConfirmOrderAPI()
         }
-        getLocation(false)
 
+        btn_complete_cleaning.setOnClickListener { view ->
+
+            val intent = Intent(
+                 Intent(activity, UploadPhotoActivity::class.java)
+                     .putExtra("order_id", order_id)
+                     .putExtra("cleaner_id", sharedPreferences.getlogin())
+             )
+             uploadActivityResult.launch(intent)
+        }
+        btn_start_cleaning.setOnClickListener { view ->
+
+            callStartCleaning()
+        }
+        getLocation(false)
+        if (sharedPreferences.isBeforeImageUploaded(order_id!!)) {
+            setStartCleaningView()
+        }
         return view
+    }
+
+    private fun callStartCleaning() {
+
+
+        CommonUtils.initProgressDialog(requireContext())
+        RetrofitClient.instance.startClean(
+            sharedPreferences.getlogin()!!,
+            order_id.toString()
+        )
+            .enqueue(object : Callback<Orders_> {
+
+                override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
+                    CommonUtils.hideProgressDialog()
+                   /* if (response.isSuccessful) {
+                        btn_start_cleaning.visibility = View.GONE
+                        btn_complete_cleaning.visibility = View.VISIBLE
+                    }*/
+                    btn_start_cleaning.visibility = View.GONE
+                    btn_complete_cleaning.visibility = View.VISIBLE
+                }
+
+
+                override fun onFailure(call: Call<Orders_>, t: Throwable) {
+                    CommonUtils.hideProgressDialog()
+                    btn_start_cleaning.visibility = View.GONE
+                    btn_complete_cleaning.visibility = View.VISIBLE
+                }
+
+            })
+    }
+
+    private fun setStartCleaningView() {
+
+        btn_complete_cleaning.visibility = View.GONE
+        btn_start_cleaning.visibility = View.VISIBLE
+        conferm_order.visibility = View.GONE
+        problem_with_order.visibility = View.GONE
+        get_direction.visibility = View.GONE
+        arrived_at_location.visibility = View.GONE
     }
 
     private fun showAddProblemNotesDialog() {
@@ -219,7 +284,6 @@ class OrderDetailFragment : Fragment() {
                 override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
                     CommonUtils.hideProgressDialog()
                     if (response.isSuccessful) {
-
                         Toast.makeText(
                             requireContext(),
                             "Your problem has been registered successfully.",
@@ -247,9 +311,20 @@ class OrderDetailFragment : Fragment() {
                 override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
                     CommonUtils.hideProgressDialog()
                     if (response.isSuccessful) {
-
-                        //callDonatesFragment();
-                        startActivity(Intent(requireContext(), AddOnsActivity::class.java))
+                        //showGenderPopup();
+                        val intent = Intent(
+                            Intent(activity, AddOnsActivity::class.java)
+                                .putExtra("order_id", order_id)
+                                .putExtra(
+                                    "cleaner_id", sharedPreferences.getlogin()
+                                )
+                        )
+                        uploadActivityResult.launch(intent)
+                        /*  startActivity(Intent(activity, AddOnsActivity::class.java)
+                              .putExtra("order_id",order_id)
+                              .putExtra("cleaner_id",sharedPreferences.getlogin())
+                          )  */ //callDonatesFragment();
+                        //  startActivity(Intent(requireContext(), AddOnsActivity::class.java))
 
 
                     }
@@ -262,6 +337,26 @@ class OrderDetailFragment : Fragment() {
                 }
 
             })
+    }
+
+    var uploadActivityResult = registerForActivityResult(
+        StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            if (result.data!=null && result.data!!.hasExtra("refreshAPI")) {
+                btn_completed.visibility =View.VISIBLE
+                btn_complete_cleaning.visibility  = View.GONE
+                btn_start_cleaning.visibility = View.GONE
+                conferm_order.visibility = View.GONE
+                problem_with_order.visibility = View.GONE
+                activity!!.onBackPressed()
+                return@registerForActivityResult
+            }
+            btn_complete_cleaning.visibility = View.GONE
+            btn_start_cleaning.visibility = View.VISIBLE
+            conferm_order.visibility = View.GONE
+            problem_with_order.visibility = View.GONE
+        }
     }
 
     private fun ConferorderDailog(context: Context?) {
@@ -391,16 +486,17 @@ class OrderDetailFragment : Fragment() {
                     requireContext()
                 ) as Double
 
-                if (distance < 10) {
-                    callArrivedAtLocationAPI();
+                if (distance != null) {
+                    if (click)
+                        callArrivedAtLocationAPI();
                 } else {
                     if (click)
-                       // callArrivedAtLocationAPI();
-                    Toast.makeText(
-                        requireContext(),
-                        "You are not at the destination",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // callArrivedAtLocationAPI();
+                        Toast.makeText(
+                            requireContext(),
+                            "You are not at the destination",
+                            Toast.LENGTH_SHORT
+                        ).show()
                 }
             } else
                 callGetLocation(click)
@@ -411,7 +507,6 @@ class OrderDetailFragment : Fragment() {
     }
 
     private fun callArrivedAtLocationAPI() {
-
 
         CommonUtils.initProgressDialog(requireContext())
         RetrofitClient.instance.arriverAtLocation(
@@ -427,6 +522,9 @@ class OrderDetailFragment : Fragment() {
                         arrived_at_location.visibility = View.GONE
                         conferm_order.visibility = View.VISIBLE
                         problem_with_order.visibility = View.VISIBLE
+                        if (sharedPreferences.isBeforeImageUploaded(order_id!!)) {
+                            setStartCleaningView()
+                        }
                     }
                 }
 
@@ -489,7 +587,7 @@ class OrderDetailFragment : Fragment() {
     ) {
         if (requestCode == permissionId) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                getLocation(true)
+                getLocation(false)
             }
         }
     }

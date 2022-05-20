@@ -6,4 +6,7 @@
     <string name="pound_sign">£</string>
     <string name="uploading">Uploading...</string>
     <string name="uploading_note">Please upload atleast 2 photos before and after cleaning the oven. A maximum 10 photos per stage can be uploaded.</string>
+    <string name="choose_from_library">Photo Library</string>
+    <string name="take_a_photo">Take a photo</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -9,7 +9,8 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 
 
-    private const val BASE_URL = "https://web.a1professionals.net/crm/"
+    //private const val BASE_URL = "https://web.a1professionals.net/crm/"
+    private const val BASE_URL = "https://magento.a1professionals.net/crm/"
 
 
     val instance: Api by lazy {

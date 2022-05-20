@@ -1,9 +1,12 @@
 package com.applications.cleaner
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +22,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class AddOnsActivity : AppCompatActivity() {
+    private var order_id: String? = ""
+    private var cleaner_id: String? = ""
     private lateinit var skip: AppCompatButton
     private lateinit var list: ArrayList<DataAddOns>
 
@@ -29,6 +34,9 @@ class AddOnsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_ons)
+
+        order_id = intent.getStringExtra("order_id")
+        cleaner_id = intent.getStringExtra("cleaner_id")
         list = arrayListOf<DataAddOns>()
         skip = findViewById(R.id.skip)
         Add_to_order = findViewById(R.id.Add_to_order)
@@ -39,12 +47,32 @@ class AddOnsActivity : AppCompatActivity() {
 
 
         addon_recycler = findViewById(R.id.addon_recycler)
-       setAdapter()
+        setAdapter()
         skip.setOnClickListener {
-            startActivity(Intent(this, UploadPhotoActivity::class.java))
+            //startActivity(Intent(this, UploadPhotoActivity::class.java))
+         /*   startActivity(
+                Intent(this, UploadPhotoActivity::class.java)
+                    .putExtra("order_id", order_id)
+                    .putExtra("cleaner_id", cleaner_id)
+            )*/
+            val intent = Intent(
+                Intent(this, UploadPhotoActivity::class.java)
+                    .putExtra("order_id", order_id)
+                    .putExtra("cleaner_id", cleaner_id)
+            )
+            uploadActivityResult.launch(intent)
         }
 
         callGetProductsList();
+    }
+
+    var uploadActivityResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            setResult(RESULT_OK)
+            finish()
+        }
     }
 
     private fun setAdapter() {
@@ -77,7 +105,6 @@ class AddOnsActivity : AppCompatActivity() {
 
             })
     }
-
 
 
 }
