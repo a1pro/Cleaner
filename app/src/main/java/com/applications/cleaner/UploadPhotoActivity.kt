@@ -111,7 +111,6 @@ class UploadPhotoActivity : AppCompatActivity() {
         RetrofitClient.instance.completeCleaning(
             cleanerIdRb,
             bookingIdRb,
-            notesRb,
             filePart1,
             filePart2
 
@@ -125,7 +124,8 @@ class UploadPhotoActivity : AppCompatActivity() {
                         "Your order has been completed successfully.",
                         Toast.LENGTH_LONG
                     ).show()
-                    val intent = Intent(Intent(this@UploadPhotoActivity, FeedbackActivity::class.java)
+                    val intent = Intent(
+                        Intent(this@UploadPhotoActivity, FeedbackActivity::class.java)
                             .putExtra("order_id", order_id)
                             .putExtra("cleaner_id", cleaner_id)
                     )
@@ -141,13 +141,17 @@ class UploadPhotoActivity : AppCompatActivity() {
         })
 
     }
+
     var feedbackActivityResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         val intent = Intent()
+        if (result != null && result.data != null && result.data!!.hasExtra("feedbackAdded"))
+            intent.putExtra("feedbackAdded", true)
         setResult(RESULT_OK, intent.putExtra("refreshAPI", true))
         finish()
     }
+
     private fun uploadImagesBeforeCleaning() {
 
         CommonUtils.initProgressDialog(this)

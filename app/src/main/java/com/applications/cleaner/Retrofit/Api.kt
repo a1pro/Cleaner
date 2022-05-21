@@ -79,7 +79,6 @@ interface Api {
     fun completeCleaning(
         @Part("cleaner_id") cleaner_id: RequestBody?,
         @Part("booking_id") booking_id: RequestBody?,
-        @Part("notes") notes: RequestBody?,
         @Part file: MultipartBody.Part?,
         @Part file2: MultipartBody.Part?
     ): Call<Orders_?>?
@@ -98,4 +97,28 @@ interface Api {
         @Part("cleaner_id") cleaner_id: RequestBody,
         @Part("booking_id") booking_id: RequestBody
     ): Call<Orders_?>?
+
+
+    @FormUrlEncoded
+    @POST("api/sendotp")
+    fun generateOTP(
+        @Field("cleaner_id") cleaner_id: String,
+        @Field("booking_id") booking_id: String
+    ): Call<Orders_>
+
+    @FormUrlEncoded
+    @POST("api/verify")
+    fun verifyOtp(
+        @Field("cleaner_id") cleaner_id: String,
+        @Field("booking_id") booking_id: String,
+        @Field("otp") otp: String
+    ): Call<Orders_>
+
+    @FormUrlEncoded
+    @POST("api/endOrder")
+    fun completeOrder(
+        @Field("cleaner_id") cleaner_id: String,
+        @Field("booking_id") booking_id: String
+    ): Call<Orders_>
+
 }

@@ -530,6 +530,54 @@
                         android:textSize="20sp"
                         android:visibility="gone" />
 
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_generate_otp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/password_conferm_text"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/login_button_backdround"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Generate OTP"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:visibility="gone" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_verift_otp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/password_conferm_text"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="30dp"
+                        android:background="@drawable/login_button_backdround"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Verify OTP"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:visibility="gone" />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_complete_order"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/password_conferm_text"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="30dp"
+                        android:background="@drawable/login_button_backdround"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Complete Order"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:visibility="gone" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

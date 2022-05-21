@@ -24,13 +24,10 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.applications.cleaner.AddOnsActivity
-import com.applications.cleaner.ApplicationGlobal
+import com.applications.cleaner.*
 import com.applications.cleaner.Models.Orders_
-import com.applications.cleaner.R
 import com.applications.cleaner.Retrofit.RetrofitClient
 import com.applications.cleaner.Shareprefrence.My_Sharepreferences
-import com.applications.cleaner.UploadPhotoActivity
 import com.applications.cleaner.utils.CommonUtils
 import com.applications.cleaner.utils.LocationGetter
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -42,14 +39,20 @@ import retrofit2.Response
 
 class OrderDetailFragment : Fragment() {
     private var order_id: String? = ""
+    private var singleOven : String? = ""
+    private var totalAmout : String? = ""
     private var activity: Activity? = null
     private lateinit var sharedPreferences: My_Sharepreferences
     private var lat: String? = ""
     private var lng: String? = ""
+    private lateinit var btn_complete_order: Button
     private lateinit var get_direction: Button
     private lateinit var upload_photo: Button
     private lateinit var arrived_at_location: Button
+
     private lateinit var conferm_order: Button
+    private lateinit var btn_verift_otp: Button
+    private lateinit var btn_generate_otp: Button
 
     private lateinit var btn_start_cleaning: Button
     private lateinit var btn_complete_cleaning: Button
@@ -84,10 +87,13 @@ class OrderDetailFragment : Fragment() {
         btn_start_cleaning = view.findViewById<Button>(R.id.btn_start_cleaning)
         btn_completed = view.findViewById<Button>(R.id.btn_completed)
         btn_complete_cleaning = view.findViewById<Button>(R.id.btn_complete_cleaning)
+        btn_complete_order = view.findViewById<Button>(R.id.btn_complete_order)
         get_direction = view.findViewById<Button>(R.id.get_direction)
         arrived_at_location = view.findViewById<Button>(R.id.arrived_at_location)
         conferm_order = view.findViewById<Button>(R.id.conferm_order)
         problem_with_order = view.findViewById<Button>(R.id.problem_with_order)
+        btn_verift_otp = view.findViewById(R.id.btn_verift_otp)
+        btn_generate_otp = view.findViewById(R.id.btn_generate_otp)
         upload_photo = view.findViewById(R.id.upload_photo)
         order_no = view.findViewById(R.id.order_no)
         cleaning_time = view.findViewById(R.id.cleaning_time)
@@ -116,9 +122,9 @@ class OrderDetailFragment : Fragment() {
         val name = requireArguments().getString("name")
         val phone = requireArguments().getString("phone")
         val address_1 = requireArguments().getString("address")
-        val singleOven = requireArguments().getString("singleOven")
+         singleOven = requireArguments().getString("singleOven")
         val extraProduct = requireArguments().getString("extraProduct")
-        val totalAmout = requireArguments().getString("totalAmout")
+         totalAmout = requireArguments().getString("totalAmout")
         val otherNotes = requireArguments().getString("otherNotes")
 
         order_no.setText(order_id)
@@ -179,6 +185,10 @@ class OrderDetailFragment : Fragment() {
         }
 
 
+        btn_complete_order.setOnClickListener { view ->
+            callCompleteOrderAPI()
+            //ArrivedorderDailog(context)
+        }
         arrived_at_location.setOnClickListener { view ->
             getLocation(true)
             //ArrivedorderDailog(context)
@@ -195,21 +205,146 @@ class OrderDetailFragment : Fragment() {
         btn_complete_cleaning.setOnClickListener { view ->
 
             val intent = Intent(
-                 Intent(activity, UploadPhotoActivity::class.java)
-                     .putExtra("order_id", order_id)
-                     .putExtra("cleaner_id", sharedPreferences.getlogin())
-             )
-             uploadActivityResult.launch(intent)
+                Intent(activity, UploadPhotoActivity::class.java)
+                    .putExtra("order_id", order_id)
+                    .putExtra("cleaner_id", sharedPreferences.getlogin())
+            )
+            uploadActivityResult.launch(intent)
         }
         btn_start_cleaning.setOnClickListener { view ->
 
             callStartCleaning()
+        }
+
+        btn_verift_otp.setOnClickListener { view ->
+
+            showVerifyPopup()
+        }
+        btn_generate_otp.setOnClickListener { view ->
+
+            callGenerateOtp()
         }
         getLocation(false)
         if (sharedPreferences.isBeforeImageUploaded(order_id!!)) {
             setStartCleaningView()
         }
         return view
+    }
+
+    private fun callCompleteOrderAPI() {
+
+
+        CommonUtils.initProgressDialog(requireContext())
+        RetrofitClient.instance.completeOrder(
+            sharedPreferences.getlogin()!!,
+            order_id.toString()
+        )
+            .enqueue(object : Callback<Orders_> {
+
+                override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
+                    CommonUtils.hideProgressDialog()
+                    if (response.isSuccessful && response.body() != null && response!!.body()!!.code!!.equals(
+                            201
+                        )
+                    ) {
+                       activity!!.onBackPressed()
+                    }
+
+                }
+
+
+                override fun onFailure(call: Call<Orders_>, t: Throwable) {
+                    CommonUtils.hideProgressDialog()
+
+                }
+
+            })
+
+    }
+
+    private fun showVerifyPopup() {
+
+        val dialog = context?.let { Dialog(it) }
+        dialog?.setCancelable(false)
+        dialog?.setContentView(R.layout.dailog_verify_otp)
+        dialog?.setCanceledOnTouchOutside(true);
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.getWindow()
+            ?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        val tv_submit = dialog?.findViewById<TextView>(R.id.tv_submit)
+        val et_otp = dialog?.findViewById<EditText>(R.id.et_otp)
+
+
+        tv_submit?.setOnClickListener { view ->
+            if (!et_otp!!.text.toString().isEmpty()) {
+                dialog!!.dismiss()
+                callVerifyOtp(et_otp!!.text.toString())
+            }
+
+        }
+        dialog?.show()
+    }
+
+    private fun callVerifyOtp(otp: String) {
+
+        CommonUtils.initProgressDialog(requireContext())
+        RetrofitClient.instance.verifyOtp(
+            sharedPreferences.getlogin()!!,
+            order_id.toString(),
+            otp.toString()
+        )
+            .enqueue(object : Callback<Orders_> {
+
+                override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
+                    CommonUtils.hideProgressDialog()
+                    if (response.isSuccessful && response.body() != null && response!!.body()!!.code!!.equals(
+                            201
+                        )
+                    ) {
+                        val intent = Intent(
+                            Intent(activity, PaymentMethodActivity::class.java)
+                                .putExtra("order_id", order_id)
+                                .putExtra("totalAmout", totalAmout)
+                                .putExtra("singleOven", singleOven)
+                                .putExtra("cleaner_id", sharedPreferences.getlogin())
+                        )
+                        paymentMethodActivityResult.launch(intent)
+                    }
+
+                }
+
+
+                override fun onFailure(call: Call<Orders_>, t: Throwable) {
+                    CommonUtils.hideProgressDialog()
+
+                }
+
+            })
+
+    }
+
+    private fun callGenerateOtp() {
+
+
+        CommonUtils.initProgressDialog(requireContext())
+        RetrofitClient.instance.generateOTP(
+            sharedPreferences.getlogin()!!,
+            order_id.toString()
+        )
+            .enqueue(object : Callback<Orders_> {
+
+                override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
+                    CommonUtils.hideProgressDialog()
+
+                }
+
+
+                override fun onFailure(call: Call<Orders_>, t: Throwable) {
+                    CommonUtils.hideProgressDialog()
+
+                }
+
+            })
     }
 
     private fun callStartCleaning() {
@@ -224,10 +359,10 @@ class OrderDetailFragment : Fragment() {
 
                 override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
                     CommonUtils.hideProgressDialog()
-                   /* if (response.isSuccessful) {
-                        btn_start_cleaning.visibility = View.GONE
-                        btn_complete_cleaning.visibility = View.VISIBLE
-                    }*/
+                    /* if (response.isSuccessful) {
+                         btn_start_cleaning.visibility = View.GONE
+                         btn_complete_cleaning.visibility = View.VISIBLE
+                     }*/
                     btn_start_cleaning.visibility = View.GONE
                     btn_complete_cleaning.visibility = View.VISIBLE
                 }
@@ -343,20 +478,76 @@ class OrderDetailFragment : Fragment() {
         StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            if (result.data!=null && result.data!!.hasExtra("refreshAPI")) {
-                btn_completed.visibility =View.VISIBLE
-                btn_complete_cleaning.visibility  = View.GONE
+            if (result != null && result.data != null && result.data!!.hasExtra("feedbackAdded")) {
+                showPaymentView()
+
+                return@registerForActivityResult
+
+            }
+            if (result.data != null && result.data!!.hasExtra("refreshAPI")) {
+                btn_completed.visibility = View.VISIBLE
+                btn_complete_cleaning.visibility = View.GONE
                 btn_start_cleaning.visibility = View.GONE
                 conferm_order.visibility = View.GONE
+
                 problem_with_order.visibility = View.GONE
-                activity!!.onBackPressed()
-                return@registerForActivityResult
+                requireActivity().onBackPressed()
             }
             btn_complete_cleaning.visibility = View.GONE
             btn_start_cleaning.visibility = View.VISIBLE
             conferm_order.visibility = View.GONE
             problem_with_order.visibility = View.GONE
         }
+    }
+
+    var paymentMethodActivityResult = registerForActivityResult(
+        StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            if (result != null && result.data != null && result.data!!.hasExtra("completeOrder")) {
+                btn_completed.visibility = View.VISIBLE
+                btn_complete_cleaning.visibility = View.GONE
+                btn_start_cleaning.visibility = View.GONE
+                conferm_order.visibility = View.GONE
+                problem_with_order.visibility = View.GONE
+                problem_with_order.visibility = View.GONE
+                btn_generate_otp.visibility = View.GONE
+                btn_verift_otp.visibility = View.GONE
+                get_direction.visibility = View.GONE
+                btn_complete_order.visibility = View.VISIBLE
+                btn_completed.visibility = View.GONE
+                return@registerForActivityResult
+            }
+            if (result != null && result.data != null && result.data!!.hasExtra("feedbackAdded")) {
+                showPaymentView()
+
+                return@registerForActivityResult
+
+            }
+            if (result.data != null && result.data!!.hasExtra("refreshAPI")) {
+                btn_completed.visibility = View.VISIBLE
+                btn_complete_cleaning.visibility = View.GONE
+                btn_start_cleaning.visibility = View.GONE
+                conferm_order.visibility = View.GONE
+                problem_with_order.visibility = View.GONE
+                requireActivity().onBackPressed()
+            }
+            btn_complete_cleaning.visibility = View.GONE
+            btn_start_cleaning.visibility = View.VISIBLE
+            conferm_order.visibility = View.GONE
+            problem_with_order.visibility = View.GONE
+        }
+    }
+
+    private fun showPaymentView() {
+        btn_completed.visibility = View.GONE
+        btn_complete_cleaning.visibility = View.GONE
+        btn_start_cleaning.visibility = View.GONE
+        conferm_order.visibility = View.GONE
+        problem_with_order.visibility = View.GONE
+        btn_verift_otp.visibility = View.VISIBLE
+        btn_generate_otp.visibility = View.VISIBLE
+
     }
 
     private fun ConferorderDailog(context: Context?) {

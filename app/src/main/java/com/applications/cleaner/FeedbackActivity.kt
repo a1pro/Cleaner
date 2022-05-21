@@ -19,7 +19,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
-import com.applications.DownloadListener
 import com.applications.cleaner.Models.Orders_
 import com.applications.cleaner.Retrofit.RetrofitClient
 import com.applications.cleaner.Shareprefrence.My_Sharepreferences
@@ -77,6 +76,11 @@ class FeedbackActivity : AppCompatActivity() {
     var rb_expa_best: RadioButton? = null
     var tv_clear: TextView? = null
     var tv_save: TextView? = null
+    var permissions = arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feedback)
@@ -86,7 +90,7 @@ class FeedbackActivity : AppCompatActivity() {
     }
 
     private fun initdata() {
-        sharedPreferences= My_Sharepreferences(this)
+        sharedPreferences = My_Sharepreferences(this)
         tv_save = findViewById(R.id.tv_save)
         tv_clear = findViewById(R.id.tv_clear)
         rl_sign = findViewById(R.id.rl_sign)
@@ -117,18 +121,22 @@ class FeedbackActivity : AppCompatActivity() {
         var tv_submit = findViewById<TextView>(R.id.tv_submit)
         tv_submit.setOnClickListener {
             //submitFeedback();
-            nestedScroll!!.visibility = View.GONE
-            showSignatureView();
+            if (checkPermissions()) {
+                nestedScroll!!.visibility = View.GONE
+                showSignatureView();
+            }
         }
         tv_save!!.setOnClickListener {
+            if (signBitmap == null)
+                return@setOnClickListener
             //submitFeedback();
             signBitmap = signature_pad!!.signatureBitmap
             // submitFeedback()
 
             CommonUtils.initProgressDialog(this)
-            if (addJpgSignatureToGallery(signBitmap!!)){
+            if (addJpgSignatureToGallery(signBitmap!!)) {
                 submitFeedback()
-            }else
+            } else
                 CommonUtils.hideProgressDialog()
 
         }
@@ -138,6 +146,30 @@ class FeedbackActivity : AppCompatActivity() {
             signBitmap = null
             photo = null
         }
+        checkPermissions()
+
+    }
+
+    private fun checkPermissions(): Boolean {
+
+        var result: Int
+        val listPermissionsNeeded: MutableList<String> = ArrayList()
+        for (p in permissions) {
+            result = ContextCompat.checkSelfPermission(this, p)
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p)
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(
+                    listPermissionsNeeded.toTypedArray(), 1000
+                )
+            }
+            return false
+        }
+        return true
+
 
     }
 
@@ -149,10 +181,11 @@ class FeedbackActivity : AppCompatActivity() {
             }
 
             override fun onSigned() {
-
+                signBitmap = signature_pad!!.signatureBitmap;
             }
 
             override fun onClear() {
+                signBitmap = null
                 //Event triggered when the pad is cleared
             }
         })
@@ -160,53 +193,53 @@ class FeedbackActivity : AppCompatActivity() {
 
     private fun submitFeedback() {
         if (rb_exp_worse!!.isChecked)
-            expe = "1"
+            expe = "worse"
         if (rb_exp_bad!!.isChecked)
-            expe = "1"
+            expe = "bad"
         if (rb_exp_ok!!.isChecked)
-            expe = "1"
+            expe = "ok"
         if (rb_exp_good!!.isChecked)
-            expe = "1"
+            expe = "good"
         if (rb_exp_best!!.isChecked)
-            expe = "1"
+            expe = "best"
 
         if (rb_expa_worse!!.isChecked)
-            expa = "1"
+            expa = "worse"
         if (rb_expa_bad!!.isChecked)
-            expa = "1"
+            expa = "bad"
         if (rb_expa_ok!!.isChecked)
-            expa = "1"
+            expa = "ok"
         if (rb_expa_good!!.isChecked)
-            expa = "1"
+            expa = "good"
         if (rb_expa_best!!.isChecked)
-            expa = "1"
+            expa = "best"
         if (rb_rate_worse!!.isChecked)
-            rate = "1"
+            rate = "worse"
         if (rb_rate_bad!!.isChecked)
-            rate = "1"
+            rate = "bad"
         if (rb_rate_ok!!.isChecked)
-            rate = "1"
+            rate = "ok"
         if (rb_rate_good!!.isChecked)
-            rate = "1"
+            rate = "good"
         if (rb_rate_best!!.isChecked)
-            rate = "1"
+            rate = "best"
 
         if (rb_protect_no!!.isChecked)
-            protect = "1"
+            protect = "no"
         if (rb_protect_yes!!.isChecked)
-            protect = "1"
+            protect = "yes"
 
 
         if (rb_grease_left_no!!.isChecked)
-            grease = "1"
+            grease = "no"
         if (rb_grease_left_yes!!.isChecked)
-            grease = "1"
+            grease = "yes"
 
 
         if (rb_carbon_no!!.isChecked)
-            carbon = "1"
+            carbon = "no"
         if (rb_carbon_yes!!.isChecked)
-            carbon = "1"
+            carbon = "yes"
 
         val cleanerIdRb: RequestBody = RequestBody.create(
             "text/plain".toMediaTypeOrNull(),
@@ -253,13 +286,20 @@ class FeedbackActivity : AppCompatActivity() {
                             "Feedback submitted successfully",
                             Toast.LENGTH_LONG
                         ).show()
+                        val intent = Intent()
+                        intent.putExtra("feedbackAdded", true)
+                        setResult(RESULT_OK, intent)
                         finish()
                     }
                 }
 
                 override fun onFailure(call: Call<Orders_?>, t: Throwable) {
                     CommonUtils.hideProgressDialog()
-                    Toast.makeText(this@FeedbackActivity,t.printStackTrace().toString(),Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@FeedbackActivity,
+                        t.printStackTrace().toString(),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
 
             })
@@ -273,7 +313,7 @@ class FeedbackActivity : AppCompatActivity() {
     fun addJpgSignatureToGallery(signature: Bitmap?): Boolean {
         var result = false
         try {
-             photo = File(
+            photo = File(
                 getAlbumStorageDir("SignaturePad"),
                 String.format("Signature_%d.jpg", System.currentTimeMillis())
             )

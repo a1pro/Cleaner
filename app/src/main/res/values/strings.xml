@@ -9,4 +9,5 @@
     <string name="choose_from_library">Photo Library</string>
     <string name="take_a_photo">Take a photo</string>
     <string name="cancel">Cancel</string>
+    <string name="loading_data">Loading data</string>
 </resources>
