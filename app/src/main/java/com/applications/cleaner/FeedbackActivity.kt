@@ -19,7 +19,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
-import com.applications.cleaner.Models.Orders_
+import com.applications.cleaner.Models.Orders_models
 import com.applications.cleaner.Retrofit.RetrofitClient
 import com.applications.cleaner.Shareprefrence.My_Sharepreferences
 import com.applications.cleaner.utils.CommonUtils
@@ -277,8 +277,8 @@ class FeedbackActivity : AppCompatActivity() {
             cleanerIdRb,
             bookingIdRb
         )
-            ?.enqueue(object : Callback<Orders_?> {
-                override fun onResponse(call: Call<Orders_?>, response: Response<Orders_?>) {
+            ?.enqueue(object : Callback<Orders_models?> {
+                override fun onResponse(call: Call<Orders_models?>, response: Response<Orders_models?>) {
                     CommonUtils.hideProgressDialog()
                     if (response.isSuccessful) {
                         Toast.makeText(
@@ -293,7 +293,7 @@ class FeedbackActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<Orders_?>, t: Throwable) {
+                override fun onFailure(call: Call<Orders_models?>, t: Throwable) {
                     CommonUtils.hideProgressDialog()
                     Toast.makeText(
                         this@FeedbackActivity,

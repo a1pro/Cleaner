@@ -136,6 +136,7 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/tv_photo_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -147,6 +148,7 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/tv_report_damage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -157,15 +159,17 @@
         android:textColor="@color/app_color"
         android:textStyle="bold" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <TextView
         android:id="@+id/btn_upload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:enabled="false"
+        android:padding="16dp"
         android:background="@color/transparent_light_gray"
         android:fontFamily="sans-serif-medium"
         android:text="Upload"
+        android:gravity="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/white" />

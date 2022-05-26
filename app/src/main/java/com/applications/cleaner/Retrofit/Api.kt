@@ -2,7 +2,7 @@ package com.applications.cleaner.Retrofit
 
 import com.applications.cleaner.Models.AddOnsList
 import com.applications.cleaner.Models.Login
-import com.applications.cleaner.Models.Orders_
+import com.applications.cleaner.Models.Orders_models
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -21,14 +21,14 @@ interface Api {
     @POST("api/getClenarOrder")
     fun getorderlist(
         @Field("cleaner_id") cleaner_id: String
-    ): Call<Orders_>
+    ): Call<Orders_models>
 
     @FormUrlEncoded
     @POST("api/ordercnfstatus")
     fun confirmOrder(
         @Field("cleaner_id") cleaner_id: String,
         @Field("booking_id") booking_id: String
-    ): Call<Orders_>
+    ): Call<Orders_models>
 
     @GET("api/productslist")
     fun orderListOrAddOns(): Call<AddOnsList>
@@ -39,7 +39,7 @@ interface Api {
         @Field("cleaner_Id") cleaner_id: String,
         @Field("order_Id") order_Id: String,
         @Field("notes_issue") notes_issue: String
-    ): Call<Orders_>
+    ): Call<Orders_models>
 
 
     @FormUrlEncoded
@@ -48,21 +48,21 @@ interface Api {
         @Field("cleaner_id") cleaner_id: String,
         @Field("live_lat") live_lat: String,
         @Field("live_long") live_long: String
-    ): Call<Orders_>
+    ): Call<Orders_models>
 
     @FormUrlEncoded
     @POST("api/arrived_at_location")
     fun arriverAtLocation(
         @Field("cleaner_id") cleaner_id: String,
         @Field("booking_id") booking_id: String
-    ): Call<Orders_>
+    ): Call<Orders_models>
 
     @FormUrlEncoded
     @POST("api/Start_Clean")
     fun startClean(
         @Field("cleaner_id") cleaner_id: String,
         @Field("booking_id") booking_id: String
-    ): Call<Orders_>
+    ): Call<Orders_models>
 
     @Multipart
     @POST("api/Photo_upload_before_clean")
@@ -70,18 +70,20 @@ interface Api {
         @Part("cleaner_id") cleaner_id: RequestBody?,
         @Part("booking_id") booking_id: RequestBody?,
         @Part("notes") notes: RequestBody?,
+        @Part("product_id") product_id: RequestBody?,
         @Part file: MultipartBody.Part?,
         @Part file2: MultipartBody.Part?
-    ): Call<Orders_?>?
+    ): Call<Orders_models?>?
 
     @Multipart
     @POST("api/Complete_clean")
     fun completeCleaning(
         @Part("cleaner_id") cleaner_id: RequestBody?,
         @Part("booking_id") booking_id: RequestBody?,
+        @Part("product_id") product_id: RequestBody?,
         @Part file: MultipartBody.Part?,
         @Part file2: MultipartBody.Part?
-    ): Call<Orders_?>?
+    ): Call<Orders_models?>?
 
 
     @Multipart
@@ -96,7 +98,7 @@ interface Api {
         @Part signature: MultipartBody.Part?,
         @Part("cleaner_id") cleaner_id: RequestBody,
         @Part("booking_id") booking_id: RequestBody
-    ): Call<Orders_?>?
+    ): Call<Orders_models?>?
 
 
     @FormUrlEncoded
@@ -104,7 +106,7 @@ interface Api {
     fun generateOTP(
         @Field("cleaner_id") cleaner_id: String,
         @Field("booking_id") booking_id: String
-    ): Call<Orders_>
+    ): Call<Orders_models>
 
     @FormUrlEncoded
     @POST("api/verify")
@@ -112,13 +114,31 @@ interface Api {
         @Field("cleaner_id") cleaner_id: String,
         @Field("booking_id") booking_id: String,
         @Field("otp") otp: String
-    ): Call<Orders_>
+    ): Call<Orders_models>
 
     @FormUrlEncoded
     @POST("api/endOrder")
     fun completeOrder(
         @Field("cleaner_id") cleaner_id: String,
         @Field("booking_id") booking_id: String
-    ): Call<Orders_>
+    ): Call<Orders_models>
+
+    @FormUrlEncoded
+    @POST("api/cash_payment")
+    fun cashPayment(
+        @Field("amount") amount: String,
+        @Field("cleaner_id") cleaner_id: String,
+        @Field("order_id") booking_id: String,
+        @Field("product_id") product_id: String
+    ): Call<Orders_models>
+
+    @FormUrlEncoded
+    @POST("api/terminal")
+    fun terminalPayment(
+        @Field("amount") amount: String,
+        @Field("cleaner_id") cleaner_id: String,
+        @Field("order_id") booking_id: String,
+        @Field("slip_id") slip_id: String
+    ): Call<Orders_models>
 
 }

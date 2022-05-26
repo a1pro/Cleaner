@@ -25,7 +25,8 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.applications.cleaner.*
-import com.applications.cleaner.Models.Orders_
+import com.applications.cleaner.Models.Order_Data
+import com.applications.cleaner.Models.Orders_models
 import com.applications.cleaner.Retrofit.RetrofitClient
 import com.applications.cleaner.Shareprefrence.My_Sharepreferences
 import com.applications.cleaner.utils.CommonUtils
@@ -39,8 +40,8 @@ import retrofit2.Response
 
 class OrderDetailFragment : Fragment() {
     private var order_id: String? = ""
-    private var singleOven : String? = ""
-    private var totalAmout : String? = ""
+    private var singleOven: String? = ""
+    private var totalAmout: String? = ""
     private var activity: Activity? = null
     private lateinit var sharedPreferences: My_Sharepreferences
     private var lat: String? = ""
@@ -72,6 +73,7 @@ class OrderDetailFragment : Fragment() {
     private lateinit var order_no: TextView
     private lateinit var instructions: TextView
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private lateinit var data: Order_Data
 
 
     override fun onCreateView(
@@ -114,6 +116,7 @@ class OrderDetailFragment : Fragment() {
         problem_with_order.visibility = View.GONE
         upload_photo.visibility = View.GONE
 
+        data = requireArguments().getSerializable("data") as Order_Data
         lat = requireArguments().getString("lat")
         lng = requireArguments().getString("lng")
         order_id = requireArguments().getString("bookingId")
@@ -122,9 +125,9 @@ class OrderDetailFragment : Fragment() {
         val name = requireArguments().getString("name")
         val phone = requireArguments().getString("phone")
         val address_1 = requireArguments().getString("address")
-         singleOven = requireArguments().getString("singleOven")
+        singleOven = requireArguments().getString("singleOven")
         val extraProduct = requireArguments().getString("extraProduct")
-         totalAmout = requireArguments().getString("totalAmout")
+        totalAmout = requireArguments().getString("totalAmout")
         val otherNotes = requireArguments().getString("otherNotes")
 
         order_no.setText(order_id)
@@ -152,6 +155,21 @@ class OrderDetailFragment : Fragment() {
         addons.setText(extraProduct)
         total_amount.setText(totalAmout)
         collect_amount.setText(totalAmout)
+        if (data != null && data.paidAmount != null && !data.paidAmount.toString().isEmpty())
+            collect_amount.setText(
+                (totalAmout!!.toDouble() - data.paidAmount.toString().toDouble()).toString() + ""
+            )
+
+        /*  Intent i = new Intent(this, ChatProductDetailActivity.class);
+            i.putExtra("data", chatMessagesList.get(pos).getProductData());
+            i.putExtra("pos", pos);
+            chatProductDetailsResultLauncher.launch(i);*/
+
+        /*  Intent i = new Intent(this, ChatProductDetailActivity.class);
+            i.putExtra("data", chatMessagesList.get(pos).getProductData());
+            i.putExtra("pos", pos);
+            chatProductDetailsResultLauncher.launch(i);*/
+
         instructions.setText(otherNotes)
 
 
@@ -206,6 +224,7 @@ class OrderDetailFragment : Fragment() {
 
             val intent = Intent(
                 Intent(activity, UploadPhotoActivity::class.java)
+                    .putExtra("product_id", data.singleOven+"")
                     .putExtra("order_id", order_id)
                     .putExtra("cleaner_id", sharedPreferences.getlogin())
             )
@@ -239,21 +258,24 @@ class OrderDetailFragment : Fragment() {
             sharedPreferences.getlogin()!!,
             order_id.toString()
         )
-            .enqueue(object : Callback<Orders_> {
+            .enqueue(object : Callback<Orders_models> {
 
-                override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
+                override fun onResponse(
+                    call: Call<Orders_models>,
+                    response: Response<Orders_models>
+                ) {
                     CommonUtils.hideProgressDialog()
                     if (response.isSuccessful && response.body() != null && response!!.body()!!.code!!.equals(
                             201
                         )
                     ) {
-                       activity!!.onBackPressed()
+                        activity!!.onBackPressed()
                     }
 
                 }
 
 
-                override fun onFailure(call: Call<Orders_>, t: Throwable) {
+                override fun onFailure(call: Call<Orders_models>, t: Throwable) {
                     CommonUtils.hideProgressDialog()
 
                 }
@@ -293,9 +315,12 @@ class OrderDetailFragment : Fragment() {
             order_id.toString(),
             otp.toString()
         )
-            .enqueue(object : Callback<Orders_> {
+            .enqueue(object : Callback<Orders_models> {
 
-                override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
+                override fun onResponse(
+                    call: Call<Orders_models>,
+                    response: Response<Orders_models>
+                ) {
                     CommonUtils.hideProgressDialog()
                     if (response.isSuccessful && response.body() != null && response!!.body()!!.code!!.equals(
                             201
@@ -303,6 +328,7 @@ class OrderDetailFragment : Fragment() {
                     ) {
                         val intent = Intent(
                             Intent(activity, PaymentMethodActivity::class.java)
+                                .putExtra("data", data)
                                 .putExtra("order_id", order_id)
                                 .putExtra("totalAmout", totalAmout)
                                 .putExtra("singleOven", singleOven)
@@ -314,7 +340,7 @@ class OrderDetailFragment : Fragment() {
                 }
 
 
-                override fun onFailure(call: Call<Orders_>, t: Throwable) {
+                override fun onFailure(call: Call<Orders_models>, t: Throwable) {
                     CommonUtils.hideProgressDialog()
 
                 }
@@ -331,15 +357,18 @@ class OrderDetailFragment : Fragment() {
             sharedPreferences.getlogin()!!,
             order_id.toString()
         )
-            .enqueue(object : Callback<Orders_> {
+            .enqueue(object : Callback<Orders_models> {
 
-                override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
+                override fun onResponse(
+                    call: Call<Orders_models>,
+                    response: Response<Orders_models>
+                ) {
                     CommonUtils.hideProgressDialog()
 
                 }
 
 
-                override fun onFailure(call: Call<Orders_>, t: Throwable) {
+                override fun onFailure(call: Call<Orders_models>, t: Throwable) {
                     CommonUtils.hideProgressDialog()
 
                 }
@@ -355,9 +384,12 @@ class OrderDetailFragment : Fragment() {
             sharedPreferences.getlogin()!!,
             order_id.toString()
         )
-            .enqueue(object : Callback<Orders_> {
+            .enqueue(object : Callback<Orders_models> {
 
-                override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
+                override fun onResponse(
+                    call: Call<Orders_models>,
+                    response: Response<Orders_models>
+                ) {
                     CommonUtils.hideProgressDialog()
                     /* if (response.isSuccessful) {
                          btn_start_cleaning.visibility = View.GONE
@@ -368,7 +400,7 @@ class OrderDetailFragment : Fragment() {
                 }
 
 
-                override fun onFailure(call: Call<Orders_>, t: Throwable) {
+                override fun onFailure(call: Call<Orders_models>, t: Throwable) {
                     CommonUtils.hideProgressDialog()
                     btn_start_cleaning.visibility = View.GONE
                     btn_complete_cleaning.visibility = View.VISIBLE
@@ -414,9 +446,12 @@ class OrderDetailFragment : Fragment() {
             order_id!!,
             note
         )
-            .enqueue(object : Callback<Orders_> {
+            .enqueue(object : Callback<Orders_models> {
 
-                override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
+                override fun onResponse(
+                    call: Call<Orders_models>,
+                    response: Response<Orders_models>
+                ) {
                     CommonUtils.hideProgressDialog()
                     if (response.isSuccessful) {
                         Toast.makeText(
@@ -430,7 +465,7 @@ class OrderDetailFragment : Fragment() {
                 }
 
 
-                override fun onFailure(call: Call<Orders_>, t: Throwable) {
+                override fun onFailure(call: Call<Orders_models>, t: Throwable) {
                     CommonUtils.hideProgressDialog()
 
                 }
@@ -441,15 +476,19 @@ class OrderDetailFragment : Fragment() {
     private fun callConfirmOrderAPI() {
         CommonUtils.initProgressDialog(requireContext())
         RetrofitClient.instance.confirmOrder(sharedPreferences.getlogin()!!, order_id!!)
-            .enqueue(object : Callback<Orders_> {
+            .enqueue(object : Callback<Orders_models> {
 
-                override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
+                override fun onResponse(
+                    call: Call<Orders_models>,
+                    response: Response<Orders_models>
+                ) {
                     CommonUtils.hideProgressDialog()
                     if (response.isSuccessful) {
                         //showGenderPopup();
                         val intent = Intent(
                             Intent(activity, AddOnsActivity::class.java)
                                 .putExtra("order_id", order_id)
+                                .putExtra("product_id", data.singleOven+"")
                                 .putExtra(
                                     "cleaner_id", sharedPreferences.getlogin()
                                 )
@@ -466,7 +505,7 @@ class OrderDetailFragment : Fragment() {
                 }
 
 
-                override fun onFailure(call: Call<Orders_>, t: Throwable) {
+                override fun onFailure(call: Call<Orders_models>, t: Throwable) {
                     CommonUtils.hideProgressDialog()
 
                 }
@@ -644,16 +683,19 @@ class OrderDetailFragment : Fragment() {
             ApplicationGlobal.gLat.toString() + "",
             ApplicationGlobal.gLng.toString() + ""
         )
-            .enqueue(object : Callback<Orders_> {
+            .enqueue(object : Callback<Orders_models> {
 
-                override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
+                override fun onResponse(
+                    call: Call<Orders_models>,
+                    response: Response<Orders_models>
+                ) {
                     CommonUtils.hideProgressDialog()
                     if (response.isSuccessful) {
 
                     }
                 }
 
-                override fun onFailure(call: Call<Orders_>, t: Throwable) {
+                override fun onFailure(call: Call<Orders_models>, t: Throwable) {
                     CommonUtils.hideProgressDialog()
 
                 }
@@ -704,9 +746,12 @@ class OrderDetailFragment : Fragment() {
             sharedPreferences.getlogin()!!,
             order_id.toString()
         )
-            .enqueue(object : Callback<Orders_> {
+            .enqueue(object : Callback<Orders_models> {
 
-                override fun onResponse(call: Call<Orders_>, response: Response<Orders_>) {
+                override fun onResponse(
+                    call: Call<Orders_models>,
+                    response: Response<Orders_models>
+                ) {
                     CommonUtils.hideProgressDialog()
                     if (response.isSuccessful) {
                         get_direction.visibility = View.GONE
@@ -720,7 +765,7 @@ class OrderDetailFragment : Fragment() {
                 }
 
 
-                override fun onFailure(call: Call<Orders_>, t: Throwable) {
+                override fun onFailure(call: Call<Orders_models>, t: Throwable) {
                     CommonUtils.hideProgressDialog()
 
                 }

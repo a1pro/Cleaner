@@ -12,10 +12,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.applications.cleaner.Models.Order_Data
-import com.applications.cleaner.Models.Orders_
 import com.applications.cleaner.R
 
-class Order_adaptor(val list: ArrayList<Order_Data>) : RecyclerView.Adapter<Order_adaptor.viewholder>(){
+class Order_adaptor(val list: List<Order_Data>) : RecyclerView.Adapter<Order_adaptor.viewholder>(){
     class viewholder(ItemView :View) : RecyclerView.ViewHolder(ItemView){
         val phone_orderlist : TextView = ItemView.findViewById(R.id.phone_orderlist)
         val name_orderlist : TextView = ItemView.findViewById(R.id.name_orderlist)
@@ -41,8 +40,10 @@ class Order_adaptor(val list: ArrayList<Order_Data>) : RecyclerView.Adapter<Orde
 
             view.findNavController().navigate(R.id.action_orders_Fragment_to_order_Detail_Fragment,
                 Bundle().apply {
+                    putSerializable("data",currentItem)
                     putString("bookingId",currentItem.bookingId)
-                    putString("status",currentItem.status)
+                    putString("bookingId",currentItem.bookingId)
+                    putString("status", currentItem.status?.toString())
                     putString("preferredTime",currentItem.preferredTime)
                     putString("name", currentItem.fname+" "+currentItem.lname)
                     putString("phone", currentItem.phone)
@@ -53,7 +54,7 @@ class Order_adaptor(val list: ArrayList<Order_Data>) : RecyclerView.Adapter<Orde
                     putString("singleOven", currentItem.singleOven)
                     putString("extraProduct", currentItem.extraProduct)
                     putString("totalAmout", currentItem.totalAmout)
-                    putString("otherNotes", currentItem.otherNotes)
+                    putString("otherNotes", currentItem.otherNotes?.toString())
 
                 }
             )

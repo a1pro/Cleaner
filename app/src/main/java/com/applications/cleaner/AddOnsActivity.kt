@@ -22,6 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class AddOnsActivity : AppCompatActivity() {
+    private var product_id: String? = ""
     private var order_id: String? = ""
     private var cleaner_id: String? = ""
     private lateinit var skip: AppCompatButton
@@ -35,6 +36,7 @@ class AddOnsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_ons)
 
+        product_id = intent.getStringExtra("product_id")
         order_id = intent.getStringExtra("order_id")
         cleaner_id = intent.getStringExtra("cleaner_id")
         list = arrayListOf<DataAddOns>()
@@ -57,6 +59,7 @@ class AddOnsActivity : AppCompatActivity() {
             )*/
             val intent = Intent(
                 Intent(this, UploadPhotoActivity::class.java)
+                    .putExtra("product_id", product_id)
                     .putExtra("order_id", order_id)
                     .putExtra("cleaner_id", cleaner_id)
             )

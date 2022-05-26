@@ -9,14 +9,16 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import com.applications.cleaner.Models.Orders_
+import com.applications.cleaner.Models.Orders_models
 import com.applications.cleaner.Retrofit.RetrofitClient
 import com.applications.cleaner.Shareprefrence.My_Sharepreferences
 import com.applications.cleaner.utils.CommonUtils
@@ -30,11 +32,14 @@ import retrofit2.Response
 import java.io.File
 
 class UploadPhotoActivity : AppCompatActivity() {
+    private var product_id: String? = ""
     private var order_id: String? = ""
     private var cleaner_id: String? = ""
-    private lateinit var btn_upload: AppCompatButton
+    private lateinit var btn_upload: TextView
     private lateinit var iv_image_one: ImageView
     private lateinit var iv_image_two: ImageView
+    private lateinit var tv_report_damage: TextView
+    private lateinit var tv_photo_count: TextView
     private lateinit var tv_after: TextView
     private val beforeImagesList: ArrayList<File> = ArrayList<File>()
     private lateinit var tv_before: TextView
@@ -45,6 +50,7 @@ class UploadPhotoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upload_photo)
         sharedPreferences = My_Sharepreferences(this)
+        product_id = intent.getStringExtra("product_id")
         order_id = intent.getStringExtra("order_id")
         cleaner_id = intent.getStringExtra("cleaner_id")
         init()
@@ -54,6 +60,8 @@ class UploadPhotoActivity : AppCompatActivity() {
         btn_upload = findViewById(R.id.btn_upload)
         iv_image_one = findViewById(R.id.iv_image_one)
         iv_image_two = findViewById(R.id.iv_image_two)
+        tv_report_damage = findViewById(R.id.tv_report_damage)
+        tv_photo_count = findViewById(R.id.tv_photo_count)
         tv_after = findViewById(R.id.tv_after)
         tv_before = findViewById(R.id.tv_before)
 
@@ -62,6 +70,11 @@ class UploadPhotoActivity : AppCompatActivity() {
                 showImageOptionPopup()
 
         }
+        tv_report_damage.setOnClickListener {
+            showAddProblemNotesDialog();
+
+        }
+
         tv_after.setOnClickListener {
             if (beforeImagesList.size < 2)
                 showImageOptionPopup()
@@ -77,6 +90,59 @@ class UploadPhotoActivity : AppCompatActivity() {
         if (sharedPreferences.isBeforeImageUploaded(order_id!!))
             setAfterCleaningView();
 
+    }
+    private fun showAddProblemNotesDialog() {
+        val dialog = this@UploadPhotoActivity.let { Dialog(it) }
+        dialog?.setCancelable(false)
+        dialog?.setContentView(R.layout.dailog_add_problem_notes)
+        dialog?.setCanceledOnTouchOutside(true);
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.getWindow()
+            ?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        val tv_submit = dialog?.findViewById<TextView>(R.id.tv_submit)
+        val et_notes = dialog?.findViewById<EditText>(R.id.et_notes)
+
+        tv_submit?.setOnClickListener { view ->
+            callProblemAPI(et_notes?.text.toString())
+            dialog?.dismiss()
+
+        }
+
+        dialog?.show()
+    }
+
+    private fun callProblemAPI(note: String) {
+        CommonUtils.initProgressDialog(this@UploadPhotoActivity)
+        RetrofitClient.instance.haveProblemWithOrder(
+            sharedPreferences.getlogin()!!,
+            order_id!!,
+            note
+        )
+            .enqueue(object : Callback<Orders_models> {
+
+                override fun onResponse(
+                    call: Call<Orders_models>,
+                    response: Response<Orders_models>
+                ) {
+                    CommonUtils.hideProgressDialog()
+                    if (response.isSuccessful) {
+                        Toast.makeText(
+                            this@UploadPhotoActivity,
+                            "Your problem has been registered successfully.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        onBackPressed()
+
+                    }
+                }
+
+
+                override fun onFailure(call: Call<Orders_models>, t: Throwable) {
+                    CommonUtils.hideProgressDialog()
+
+                }
+
+            })
     }
 
     private fun completeCleaning() {
@@ -108,14 +174,16 @@ class UploadPhotoActivity : AppCompatActivity() {
             beforeImagesList.get(1).name,
             requestBody2
         )
+        val productIdRB: RequestBody = RequestBody.create(("text/plain").toMediaTypeOrNull(), product_id!!)
         RetrofitClient.instance.completeCleaning(
             cleanerIdRb,
             bookingIdRb,
+            productIdRB,
             filePart1,
             filePart2
 
-        )!!.enqueue(object : Callback<Orders_?> {
-            override fun onResponse(call: Call<Orders_?>, response: Response<Orders_?>) {
+        )!!.enqueue(object : Callback<Orders_models?> {
+            override fun onResponse(call: Call<Orders_models?>, response: Response<Orders_models?>) {
                 CommonUtils.hideProgressDialog()
                 if (response.isSuccessful && response.body()!!.code == 201) {
                     sharedPreferences.setBeforeImageUploaded(true, order_id!!)
@@ -131,11 +199,24 @@ class UploadPhotoActivity : AppCompatActivity() {
                     )
                     feedbackActivityResult.launch(intent)
 
+                }else{
+                    Toast.makeText(
+                        this@UploadPhotoActivity,
+                        "Something went wrong, please  try again later.",
+                        Toast.LENGTH_LONG
+                    ).show()
+
                 }
             }
 
-            override fun onFailure(call: Call<Orders_?>, t: Throwable) {
+            override fun onFailure(call: Call<Orders_models?>, t: Throwable) {
                 CommonUtils.hideProgressDialog()
+                Toast.makeText(
+                    this@UploadPhotoActivity,
+                    t.localizedMessage,
+                    Toast.LENGTH_LONG
+                ).show()
+
             }
 
         })
@@ -159,6 +240,7 @@ class UploadPhotoActivity : AppCompatActivity() {
             "text/plain".toMediaTypeOrNull(),
             sharedPreferences.getlogin()!! + ""
         )
+        val product_idRB: RequestBody = RequestBody.create(("text/plain").toMediaTypeOrNull(), product_id!!)
         val notesRb: RequestBody = RequestBody.create(("text/plain").toMediaTypeOrNull(), "123")
         val bookingIdRb: RequestBody = RequestBody.create(
             ("text/plain").toMediaTypeOrNull(),
@@ -185,11 +267,12 @@ class UploadPhotoActivity : AppCompatActivity() {
             cleanerIdRb,
             bookingIdRb,
             notesRb,
+            product_idRB,
             filePart1,
             filePart2
 
-        )!!.enqueue(object : Callback<Orders_?> {
-            override fun onResponse(call: Call<Orders_?>, response: Response<Orders_?>) {
+        )!!.enqueue(object : Callback<Orders_models?> {
+            override fun onResponse(call: Call<Orders_models?>, response: Response<Orders_models?>) {
                 CommonUtils.hideProgressDialog()
                 if (response.isSuccessful && response.body()!!.code == 201) {
                     sharedPreferences.setBeforeImageUploaded(true, order_id!!)
@@ -201,11 +284,23 @@ class UploadPhotoActivity : AppCompatActivity() {
                     setAfterCleaningView();
                     setResult(RESULT_OK)
                     finish()
+                }else{
+                    Toast.makeText(
+                        this@UploadPhotoActivity,
+                        "Something went wrong, please  try again later.",
+                        Toast.LENGTH_LONG
+                    ).show()
+
                 }
             }
 
-            override fun onFailure(call: Call<Orders_?>, t: Throwable) {
+            override fun onFailure(call: Call<Orders_models?>, t: Throwable) {
                 CommonUtils.hideProgressDialog()
+                Toast.makeText(
+                    this@UploadPhotoActivity,
+                    t.localizedMessage,
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
         })
@@ -271,6 +366,7 @@ class UploadPhotoActivity : AppCompatActivity() {
             //Image Uri will not be null for RESULT_OK
             val uri = data.data
             beforeImagesList.add(File(uri!!.path))
+            tv_photo_count.text="Uploaded photos: "+beforeImagesList.size
             if (beforeImagesList.size > 1) {
                 iv_image_two.setImageURI(uri)
                 enableUploadButton()
