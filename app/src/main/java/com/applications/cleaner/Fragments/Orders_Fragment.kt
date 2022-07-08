@@ -39,23 +39,24 @@ class Orders_Fragment : Fragment() {
         recycler_order.layoutManager= LinearLayoutManager(this.context)
 
         progressBar!!.visibility = View.VISIBLE
+        Log.e("getresponse", "onResponse: " +sharedPreferences.getlogin())
         RetrofitClient.instance.getorderlist(sharedPreferences.getlogin()!!)
             .enqueue(object : Callback<Orders_models>{
 
                 override fun onResponse(call: Call<Orders_models>, response: Response<Orders_models>) {
 
                     if (response.isSuccessful){
+                        Log.e("getresponse", "onResponse: " +response)
+
                         progressBar!!.visibility = View.GONE
                         order_list=response.body()!!
                         if (order_list.code!!.equals(201)){
-                            Log.e("response", "onResponse: " +response)
 
                             recycler_order.adapter= Order_adaptor(order_list.data!!)
                         }
 
                     }
                 }
-
 
                 override fun onFailure(call: Call<Orders_models>, t: Throwable) {
                     Log.e("response", "onResponse: " +t)

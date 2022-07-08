@@ -32,10 +32,63 @@
         <entry key="..\:/Bro work/office/cleaner_app_new/app/src/main/res/layout/dailog_add_transaction_id.xml" value="0.1921875" />
         <entry key="..\:/Bro work/office/cleaner_app_new/app/src/main/res/layout/dailog_verify_otp.xml" value="0.1921875" />
         <entry key="..\:/Bro work/office/cleaner_app_new/app/src/main/res/layout/fragment_home_.xml" value="0.1921875" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/drawable/add.xml" value="0.117" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/drawable/remove.xml" value="0.117" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/activity_add_ons.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/activity_add_ons2.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/activity_feedback.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/activity_main.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/activity_payemnt_webview.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/activity_payment_method.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/activity_signup.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/activity_splash__aactivity.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/activity_upload_photo.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/dailog_add_problem_notes.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/dailog_add_transaction_id.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/dailog_arrived_location.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/dailog_verify_otp.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/dialog_camera_gallery.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/fragment_addons_.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/fragment_getdirection_.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/fragment_history_.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/fragment_home_.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/fragment_order__detail_.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/fragment_orders_.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/fragment_profile_.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/inflate_progress_bar.xml" value="0.1308876811594203" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/item_addon.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/item_orders.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/location_dailog.xml" value="0.19114583333333332" />
+        <entry key="..\:/Raman/cleaner_app_new/app/src/main/res/layout/login_activity.xml" value="0.19114583333333332" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/activity_add_ons.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/activity_add_ons2.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/activity_feedback.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/activity_main.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/activity_payemnt_webview.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/activity_payment_method.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/activity_splash__aactivity.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/activity_upload_photo.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/dailog_add_problem_notes.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/dailog_add_transaction_id.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/dailog_arrived_location.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/dailog_verify_otp.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/dialog_camera_gallery.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/fragment_addons_.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/fragment_getdirection_.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/fragment_history_.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/fragment_home_.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/fragment_order__detail_.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/fragment_orders_.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/fragment_profile_.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/inflate_progress_bar.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/item_addon.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/item_orders.xml" value="0.13269927536231885" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/location_dailog.xml" value="0.18" />
+        <entry key="..\:/recover/Recoverit 2022-07-07 at 11.46.18/Raman/cleaner_app_new/app/src/main/res/layout/login_activity.xml" value="0.13269927536231885" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

@@ -10,11 +10,15 @@ class DataAddOns {
 
     @SerializedName("price")
     @Expose
-    var price: String? = null
+    var price: Double? = null
 
     @SerializedName("name_product")
     @Expose
     var nameProduct: String? = null
+
+    @SerializedName("wages_price")
+    @Expose
+    var wages_price: Double? = null
 
     @SerializedName("status")
     @Expose

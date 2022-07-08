@@ -27,12 +27,12 @@ import androidx.navigation.fragment.findNavController
 import com.applications.cleaner.*
 import com.applications.cleaner.Models.Order_Data
 import com.applications.cleaner.Models.Orders_models
+import com.applications.cleaner.R
 import com.applications.cleaner.Retrofit.RetrofitClient
 import com.applications.cleaner.Shareprefrence.My_Sharepreferences
 import com.applications.cleaner.utils.CommonUtils
 import com.applications.cleaner.utils.LocationGetter
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -195,10 +195,18 @@ class OrderDetailFragment : Fragment() {
             bundle.putString("lng", lng)
             bundle.putString("lat", lat) // Serializable Object
 
-            findNavController().navigate(
-                R.id.action_order_Detail_Fragment_to_getdirection_Fragment,
-                bundle
-            )
+            mFusedLocationClient.lastLocation.addOnCompleteListener {task ->
+                val location : Location? = task.result
+                if (location != null){
+                    Log.e("location", "1234567: ")
+                    findNavController().navigate(R.id.action_order_Detail_Fragment_to_getdirection_Fragment, bundle)
+                }
+                else{
+                    location_dialog()
+                }
+            }
+
+
 
         }
 
@@ -248,6 +256,81 @@ class OrderDetailFragment : Fragment() {
             setStartCleaningView()
         }
         return view
+    }
+
+    private fun location_dialog() {
+
+        val mLocationRequest: LocationRequest = LocationRequest.create()
+        mLocationRequest.setInterval(60000)
+        mLocationRequest.setFastestInterval(5000)
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        val mLocationCallback: LocationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                if (locationResult == null) {
+                    return
+                }
+                for (location in locationResult.locations) {
+                    if (location != null) {
+                        if (location != null){
+                            try {
+
+
+                                val   currentlatitude = location.latitude
+                                val  currentlongitude =location.longitude
+
+                                Log.e("location", "tasklocation: $currentlatitude , $currentlongitude")
+
+                                getLocation(false)
+                            }catch (e:Exception){
+                                Log.e("location", "tasklocation: $e")
+
+                            }
+
+//                            googleMap.uiSettings.isCompassEnabled = true
+//                            googleMap.uiSettings.isZoomControlsEnabled = true
+
+                        }
+                        else{
+                            Log.e("location", "tasklocation ")
+
+                        }
+
+                    }
+                    else{
+                        dailognulllocation()
+                    }
+                }
+            }
+        }
+        LocationServices.getFusedLocationProviderClient(context!!)
+            .requestLocationUpdates(mLocationRequest, mLocationCallback, null)
+
+
+
+
+
+
+    }
+
+    private fun dailognulllocation() {
+
+
+        val dialog = requireContext()?.let { Dialog(it) }
+        dialog?.setCancelable(false)
+        dialog?.setContentView(R.layout.location_dailog)
+        dialog?.setCanceledOnTouchOutside(true);
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.getWindow()
+            ?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        val tv_submit = dialog?.findViewById<TextView>(R.id.tv_submit)
+
+        tv_submit?.setOnClickListener { view ->
+
+            dialog?.dismiss()
+
+        }
+
+        dialog?.show()
     }
 
     private fun callCompleteOrderAPI() {
@@ -652,18 +735,22 @@ class OrderDetailFragment : Fragment() {
         if (checkPermissions()) {
             Log.e("Location", ":11111111 ")
             if (isLocationEnabled()) {
-                rl_get_loc!!.visibility = View.VISIBLE
+//                rl_get_loc!!.visibility = View.VISIBLE
                 val locationGetter = LocationGetter(requireContext())
 
                 callGetLocation(click);
-                mFusedLocationClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
-                    val location: Location? = task.result
-                    Log.e("Location", "getLocation: " + location)
-                    if (location != null) {
+                mFusedLocationClient.lastLocation.addOnCompleteListener {task ->
+                    val location : Location? = task.result
+                    if (location != null){
                         ApplicationGlobal.gLat = location.latitude
                         ApplicationGlobal.gLng = location.longitude
                         //callUpdateLocationAPI()
+
                     }
+                    else{
+                        location_dialog()
+                    }
+
                 }
             } else {
                 Toast.makeText(requireContext(), "Please turn on location", Toast.LENGTH_LONG)
@@ -677,7 +764,9 @@ class OrderDetailFragment : Fragment() {
     }
 
     private fun callUpdateLocationAPI() {
-        CommonUtils.initProgressDialog(requireContext())
+
+        Log.e("findlocatin", "callGetLocation: ${ApplicationGlobal.gLat} , ${ApplicationGlobal.gLng},")
+
         RetrofitClient.instance.updateLocation(
             sharedPreferences.getlogin()!!,
             ApplicationGlobal.gLat.toString() + "",
@@ -705,12 +794,13 @@ class OrderDetailFragment : Fragment() {
     }
 
     private fun callGetLocation(click: Boolean) {
+
         Handler().postDelayed({
             if (ApplicationGlobal.gLat < 0 || ApplicationGlobal.gLat > 0 || ApplicationGlobal.gLng < 0 ||
                 ApplicationGlobal.gLng > 0
             ) {
                 callUpdateLocationAPI()
-                rl_get_loc!!.visibility = View.GONE
+//                rl_get_loc!!.visibility = View.GONE
                 val distance = CommonUtils.isAtDestination(
                     lat,
                     lng,
@@ -740,6 +830,7 @@ class OrderDetailFragment : Fragment() {
     }
 
     private fun callArrivedAtLocationAPI() {
+
 
         CommonUtils.initProgressDialog(requireContext())
         RetrofitClient.instance.arriverAtLocation(

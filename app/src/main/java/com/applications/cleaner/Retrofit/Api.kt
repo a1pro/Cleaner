@@ -141,4 +141,14 @@ interface Api {
         @Field("slip_id") slip_id: String
     ): Call<Orders_models>
 
+    @FormUrlEncoded
+    @POST("api/addonUpsellby")
+    fun addonUpsellby(
+        @Field("cleaner_id") cleaner_id: String,
+        @Field("booking_id") booking_id: String,
+        @Field("addonUpsell_by_clenaer") addonUpsell_by_clenaer: String,
+        @Field("addonPrice_by_clenaer") addonPrice_by_clenaer: String,
+        @Field("wages_by_clenaer") wages_by_clenaer: String
+    ): Call<Orders_models>
+
 }

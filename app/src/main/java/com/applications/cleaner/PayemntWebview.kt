@@ -106,7 +106,7 @@ class PayemntWebview : AppCompatActivity() {
                 super.onProgressChanged(view, newProgress)
             }
         })
-        wb_donate!!.loadUrl("https://website.thebespokecleanercrm.com/thank-payment-user?booking-number=" + order_id)
+        wb_donate!!.loadUrl("https://website.thebespokecleanercrm.com/thank-payment?booking-number=" + order_id)
     }
 
     override fun onBackPressed() {

@@ -330,7 +330,7 @@ class UploadPhotoActivity : AppCompatActivity() {
         dialog.setContentView(R.layout.dialog_camera_gallery)
         val tv_dialoge_cancel = dialog.findViewById<TextView>(R.id.tv_dialoge_cancel)
         tv_dialoge_cancel.setOnClickListener { dialog.dismiss() }
-        val tv_gallery = dialog.findViewById<TextView>(R.id.tv_library)
+//        val tv_gallery = dialog.findViewById<TextView>(R.id.tv_library)
         val tv_camera = dialog.findViewById<TextView>(R.id.camera)
         dialog.setCancelable(true)
         tv_camera.setOnClickListener {
@@ -345,18 +345,18 @@ class UploadPhotoActivity : AppCompatActivity() {
                 ) //Final image resolution will be less than 1080 x 1080(Optional)
                 .start()
         }
-        tv_gallery.setOnClickListener {
-            dialog.dismiss()
-            ImagePicker.with(this)
-                .crop()
-                .galleryOnly() //Crop image(Optional), Check Customization for more option
-                .compress(1024) //Final image size will be less than 1 MB(Optional)
-                .maxResultSize(
-                    1080,
-                    1080
-                ) //Final image resolution will be less than 1080 x 1080(Optional)
-                .start()
-        }
+//        tv_gallery.setOnClickListener {
+//            dialog.dismiss()
+//            ImagePicker.with(this)
+//                .crop()
+//                .galleryOnly() //Crop image(Optional), Check Customization for more option
+//                .compress(1024) //Final image size will be less than 1 MB(Optional)
+//                .maxResultSize(
+//                    1080,
+//                    1080
+//                ) //Final image resolution will be less than 1080 x 1080(Optional)
+//                .start()
+//        }
         dialog.show()
     }
 

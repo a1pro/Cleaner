@@ -20,16 +20,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
-                android:id="@+id/tv_library"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="15dp"
-                android:background="@color/transparent_light_gray"
-                android:text="@string/choose_from_library"
-                android:textColor="@color/blue"
-                android:textSize="18sp" />
+<!--            <TextView-->
+<!--                android:id="@+id/tv_library"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:padding="15dp"-->
+<!--                android:background="@color/transparent_light_gray"-->
+<!--                android:text="@string/choose_from_library"-->
+<!--                android:textColor="@color/blue"-->
+<!--                android:textSize="18sp" />-->
 
 
             <View

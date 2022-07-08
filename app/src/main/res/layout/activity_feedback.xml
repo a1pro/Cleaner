@@ -7,6 +7,19 @@
     android:orientation="vertical"
     tools:context=".FeedbackActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
@@ -423,5 +436,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="@color/white" />
     </RelativeLayout>
+    </RelativeLayout>
 
+    </ScrollView>
 </RelativeLayout>
