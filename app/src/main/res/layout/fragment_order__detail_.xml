@@ -601,6 +601,7 @@
             android:layout_centerInParent="true"
             android:background="@color/white"
             android:orientation="horizontal"
+            android:visibility="visible"
             android:paddingStart="20dp"
             android:paddingTop="10dp"
             android:paddingEnd="20dp"

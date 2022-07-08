@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
@@ -16,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.applications.cleaner.ApplicationGlobal
@@ -118,6 +120,7 @@ class DirectionFragment : Fragment(), TaskLoadedCallback {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.CUPCAKE)
     private fun loadMapAndRoute() {
         progressBar!!.visibility = View.GONE
 
